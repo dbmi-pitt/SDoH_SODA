@@ -71,7 +71,7 @@ def load_model(args, new_model_dir=None):
     try:
         model = MODEL_CLASSES[args.model_type][1]
         model = model(config=args.config)
-        model.load_state_dict(state_dict=ckpt)
+        model.load_state_dict(state_dict=ckpt, strict=False)
     except AttributeError as Ex:
         args.logger.warning(
             """The model seems save using model.save instead of model.state_dict,
