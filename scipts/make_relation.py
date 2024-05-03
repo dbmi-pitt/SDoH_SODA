@@ -185,27 +185,36 @@ def gene_neg_relation(perm_pairs, true_pairs, mappings, ens, e2i, nnsents, nsent
         # not in true relation
         if (enid1, enid2) in true_pairs:
             continue
-        
+
+        print(f"(enid1, enid2) in NOT true_pairs: \n\t{enid1}, \n\t{enid2}")
         enc1 = ens[e2i[enid1]]
         enc2 = ens[e2i[enid2]]
 
         enbs1, enbe1 = mappings[enid1]
         en1 = nnsents[enbs1: enbe1+1]
+        print(f"enbs1, enbe1, en1: \n\t{enbs1}, \n\t{enbe1}, \n\t{en1}")
         si1, sii1, fs1, ors1 = format_relen(en1, 1, nsents)
+        print(f"si1, sii1, fs1, ors1: \n\t{si1}, \n\t{sii1}, \n\t{fs1}, \n\t{ors1}")
         enbs2, enbe2 = mappings[enid2]
         en2 = nnsents[enbs2: enbe2+1]
+        print(f"enbs2, enbe2, en2: \n\t{enbs2}, \n\t{enbe2}, \n\t{en2}")
         si2, sii2, fs2, ors2 = format_relen(en2, 2, nsents)
+        print(f"si2, sii2, fs2, ors2: \n\t{si2}, \n\t{sii2}, \n\t{fs2}, \n\t{ors2}")
         sent_diff = abs(si1 - si2)
+        print(f"sent_diff: \n\t{sent_diff}")
         
         en1t = en1[0][-1].split("-")[-1]
         en2t = en2[0][-1].split("-")[-1]
+        print(f"en1t, en2t: \n\t{en1t}, \n\t{en2t}")
         
         if (en1t, en2t) not in valid_comb:
             continue
-        
+
+        print(f"(en1t, en2t) IN valid_comb: $\n\t{en1t} $\n\t{en2t}")
         if sent_diff <= CUTOFF:
+            print("sent_diff <= CUTOFF")
             check_tags(fs1, fs2)
-            assert (en1t, en2t) in valid_comb, f"{en1t} {en2t}"
+            assert (en1t, en2t) in valid_comb, f"\n\t{en1t} \n\t{en2t}"
             if fid:
                 neg_samples.append((sent_diff, NEG_REL, fs1, fs2, en1t, en2t, enid1, enid2, fid))
             else:
@@ -391,13 +400,16 @@ EN2_START = "[s2]"
 EN2_END = "[e2]"
 NEG_REL = "NonRel"
 # max valid cross sentence distance
-CUTOFF = 1
+## CUTOFF = 1 -- default
+CUTOFF = 50000 # Test to generate sample data
+
+
 # output 5-fold cross validation data
 OUTPUT_CV = False
 # do binary classification (if false, then we do multiclass classification)
 DO_BIN = False
 
-sdoh_valid_comb = {
+sdoh_valid_comb = {('Gender','Marital_status'),('Gender','Drug_type'),('Drug_type','Marital_status'),
         ('Tobacco_use', 'Substance_use_status'), ('Substance_use_status', 'Smoking_type'),
         ('Substance_use_status', 'Smoking_freq_ppd'), ('Substance_use_status', 'Smoking_freq_py'), 
         ('Substance_use_status', 'Smoking_freq_qy'), ('Substance_use_status', 'Smoking_freq_sy'),

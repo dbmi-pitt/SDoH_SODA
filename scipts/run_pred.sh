@@ -20,6 +20,7 @@ output_name=bio
 mkdir $output_dir
 export CUDA_VISIBLE_DEVICES=$cuda
 
+# This can be commented out if the NER step runs but the next step fails
 python3 ./run_ner.py $input_dir $output_name
 
 python3 ../ClinicalTransformerNER/src/run_transformer_batch_prediction.py \
@@ -31,14 +32,13 @@ python3 ../ClinicalTransformerNER/src/run_transformer_batch_prediction.py \
       --max_seq_length 128 \
       --do_lower_case \
       --eval_batch_size 8 \
-      --log_file ../logs/log_ner.txt\
+      --log_file ../logs/log_ner.txt \
       --do_format 1 \
       --do_copy \
       --data_has_offset_information
 
 
 python3 ./make_relation.py $input_dir $output_name
-
 
 bz=4
 epn=3
